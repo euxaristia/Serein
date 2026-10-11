@@ -55,6 +55,7 @@ general-hide-decorations = Masquer les décorations de fenêtres
 general-hide-decorations-description = Supprimez la barre de titre et les bordures du système. Utilisez votre gestionnaire de fenêtres pour déplacer, redimensionner ou fermer Serein.
 general-hide-title-bar = Masquer la barre de titre Serein
 general-hide-title-bar-description = Utilisez plutôt la barre de titre du système et les boutons de la fenêtre.
+general-hide-title-bar-description-windows = Masque la barre de titre de Serein. Réduire, agrandir et fermer restent sur la barre de titre du système.
 general-keep-menu-bar = Gardez Serein dans la barre de menu
 general-keep-system-tray = Gardez Serein dans la barre d'état système
 general-menu-bar-description = La fermeture de la fenêtre maintient Serein dans la barre de menu. Quittez son menu pour quitter.

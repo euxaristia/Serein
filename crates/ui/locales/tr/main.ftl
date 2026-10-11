@@ -55,6 +55,7 @@ general-hide-decorations = Pencere dekorasyonlarını gizle
 general-hide-decorations-description = Sistem başlık çubuğunu ve kenarlıklarını kaldırın. Serein'i taşımak, yeniden boyutlandırmak veya kapatmak için pencere yöneticinizi kullanın.
 general-hide-title-bar = Serein başlık çubuğunu gizle
 general-hide-title-bar-description = Bunun yerine sistem başlık çubuğunu ve pencere düğmelerini kullanın.
+general-hide-title-bar-description-windows = Serein başlık şeridini gizler. Küçült, büyüt ve kapat sistem başlık çubuğunda kalır.
 general-keep-menu-bar = Serein'i menü çubuğunda tutun
 general-keep-system-tray = Serein'i sistem tepsisinde tutun
 general-menu-bar-description = Pencereyi kapatmak Serein'i menü çubuğunda tutar. Çıkmak için menüsünden çıkın.

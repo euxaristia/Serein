@@ -162,44 +162,45 @@ fn secondary_press_and_content_press_do_not_drag() {
 	}
 }
 
-#[cfg(target_os = "windows")]
 #[test]
-fn caption_buttons_act_without_dragging_and_title_double_click_maximizes() {
+fn title_strip_does_not_emit_caption_commands() {
+	// Minimize, maximize and close belong to the system frame, including its top-right corner.
 	for width in [760.0, 1200.0] {
-		for (offset, expected) in [
-			(35.0, ViewportCommand::Close),
-			(81.0, ViewportCommand::Maximized(true)),
-			(127.0, ViewportCommand::Minimized(true)),
+		for (x, y) in [
+			(width - 1.0, 1.0),
+			(width - 8.0, 18.0),
+			(width - 35.0, 18.0),
+			(width - 81.0, 18.0),
+			(width - 127.0, 18.0),
 		] {
 			let ctx = egui::Context::default();
 			let mut view = MessagingUi::default();
 			frame(&ctx, &mut view, width, vec![]);
-			let pos = egui::pos2(width - offset, 18.0);
-			assert!(
-				frame(
+			let pos = egui::pos2(x, y);
+			for pressed in [true, false] {
+				let commands = frame(
 					&ctx,
 					&mut view,
 					width,
-					pointer(pos, PointerButton::Primary, true)
-				)
-				.is_empty()
-			);
-			assert_eq!(
-				frame(
-					&ctx,
-					&mut view,
-					width,
-					pointer(pos, PointerButton::Primary, false)
-				),
-				[expected]
-			);
+					pointer(pos, PointerButton::Primary, pressed),
+				);
+				assert!(
+					!commands.iter().any(|command| matches!(
+						command,
+						ViewportCommand::Close
+							| ViewportCommand::Minimized(_)
+							| ViewportCommand::Maximized(_)
+					)),
+					"width={width} pos={pos:?} pressed={pressed} commands={commands:?}"
+				);
+			}
 		}
 	}
 	let ctx = egui::Context::default();
 	let mut view = MessagingUi::default();
 	frame(&ctx, &mut view, 760.0, vec![]);
 	let pos = egui::pos2(380.0, 18.0);
-	for click in 0..2 {
+	for _ in 0..2 {
 		assert_eq!(
 			frame(
 				&ctx,
@@ -209,16 +210,14 @@ fn caption_buttons_act_without_dragging_and_title_double_click_maximizes() {
 			),
 			[ViewportCommand::StartDrag]
 		);
-		let released = frame(
-			&ctx,
-			&mut view,
-			760.0,
-			pointer(pos, PointerButton::Primary, false),
+		assert!(
+			frame(
+				&ctx,
+				&mut view,
+				760.0,
+				pointer(pos, PointerButton::Primary, false)
+			)
+			.is_empty()
 		);
-		if click == 0 {
-			assert!(released.is_empty());
-		} else {
-			assert_eq!(released, [ViewportCommand::Maximized(true)]);
-		}
 	}
 }

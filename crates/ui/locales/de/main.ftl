@@ -55,6 +55,7 @@ general-hide-decorations = Fensterdekorationen verstecken
 general-hide-decorations-description = Entfernen Sie die Titelleiste und die Ränder des Systems. Verwenden Sie Ihren Fenstermanager, um Serein zu verschieben, in der Größe zu ändern oder zu schließen.
 general-hide-title-bar = Serein-Titelleiste ausblenden
 general-hide-title-bar-description = Verwenden Sie stattdessen die Systemtitelleiste und die Fensterschaltflächen.
+general-hide-title-bar-description-windows = Blendet die Serein-Titelleiste aus. Minimieren, Maximieren und Schließen bleiben in der Systemtitelleiste.
 general-keep-menu-bar = Behalten Sie Serein in der Menüleiste
 general-keep-system-tray = Bewahren Sie Serein in der Taskleiste auf
 general-menu-bar-description = Durch das Schließen des Fensters verbleibt Serein in der Menüleiste. Verlassen Sie das Menü, um es zu verlassen.

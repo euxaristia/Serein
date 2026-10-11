@@ -55,6 +55,7 @@ general-hide-decorations = 隱藏視窗裝飾
 general-hide-decorations-description = 拿掉系統標題列與邊框，改用視窗管理員來移動、調整大小或關閉 Serein。
 general-hide-title-bar = 隱藏 Serein 標題列
 general-hide-title-bar-description = 改用系統標題列與視窗按鈕。
+general-hide-title-bar-description-windows = 隱藏 Serein 的標題列。最小化、最大化與關閉仍在系統標題列上。
 general-keep-menu-bar = 讓 Serein 留在選單列
 general-keep-system-tray = 讓 Serein 留在系統匣
 general-menu-bar-description = 關閉視窗後 Serein 留在選單列。要結束請從選單中選離開。

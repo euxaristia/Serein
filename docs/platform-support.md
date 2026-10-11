@@ -42,38 +42,39 @@ available (for example, `dx12` or `vulkan`). Affected users confirmed that forci
 DX12 launches successfully; the new default still needs native Windows validation.
 macOS and Linux retain their existing backend defaults.
 
-Windows turns off winit's undecorated drop-shadow hack after the window exists, including
-after title-bar changes. egui-winit enables that hack for custom chrome. While restored it
-adds one pixel to `WM_NCCALCSIZE` top and bottom. Maximizing skips the shift, which is why
-only that state looked sharp. `ViewportBuilder::with_has_shadow` is macOS-only and does not
-disable the Windows hack. Native DPI and eframe's physical surface sizing remain unchanged.
-macOS/Linux window creation is unchanged.
-The custom Windows frame requests DWM's rounded-corner treatment on Windows 11. Windows keeps
-maximized windows square, and older releases ignore the unsupported preference.
+Windows uses the normal system frame: title bar, borders and caption buttons. The close
+button is the system caption control. The in-app 36 px
+strip stays for navigation. It requests a native window move on the initial primary-button
+press, including over its nonselectable context title, and does not wait for egui's text/drag
+threshold. It does not paint minimize, maximize or close, and it does not resize the window
+or toggle maximize. The system frame does those. Synthetic egui input tests check that the
+strip does not emit caption commands. Native movement still needs a desktop interaction check.
+General settings on Windows can hide the 36 px strip. The system frame stays. The device
+preference defaults to showing the strip and is saved with other app preferences; older saved
+settings keep that choice. macOS can hide the strip and use the native title bar instead,
+switching without a restart and keeping its traffic lights. Linux always omits the app strip
+and defaults to system decorations; on Wayland compositors without server decorations, including
+GNOME, winit uses its Adwaita frame instead of the basic fallback. GNOME rendering remains
+unverified in this macOS fast local pass. Linux General → Window includes **Hide window decorations**,
+which requests a borderless window immediately and persists across restarts. Moving, resizing
+and closing then use the window manager's controls. The compositor controls whether decoration
+requests are honored; native X11/Wayland verification of this toggle remains pending.
+
+egui-winit enables winit's undecorated drop-shadow adjustment for borderless windows. While a
+borderless window is restored, that adjustment adds one pixel to `WM_NCCALCSIZE` top and bottom.
+The desktop window is created decorated, and Serein does not toggle the adjustment.
+`ViewportBuilder::with_has_shadow` is macOS-only. Native DPI and eframe's physical surface sizing
+remain unchanged. macOS/Linux window creation is unchanged.
+The window requests DWM's rounded-corner preference on Windows 11. Windows keeps maximized
+windows square, and older releases ignore the unsupported preference.
 For offline inspection, run `cargo run --locked -p serein --features demo -- --demo --demo-rendering`.
 The diagnostic shows the physical client size, logical viewport, native/egui scale and WGPU
 surface dimensions sampled by a render callback, plus alternating one-pixel stripes.
 The surface sample is from the previous paint: compare at rest after resizing, maximizing,
-restoring, toggling the title bar and moving between monitors (including mixed DPI).
+restoring, hiding the in-app title strip and moving between monitors (including mixed DPI).
 Surface/client dimensions should match and stripes/text/images should stay sharp. If dimensions
 match but blur persists, the surface-resolution hypothesis is not established; investigate
 driver/DWM presentation on that machine. Windows visual acceptance remains unverified.
-
-The custom title strip requests a native window move on the initial primary-button press,
-including over its nonselectable context title. It does not wait for egui's text/drag threshold.
-Caption buttons and other clickable title-strip controls keep their own actions; Windows
-double-click maximize/restore remains available. Synthetic egui input tests check command
-dispatch, not native OS window movement, which still requires a desktop interaction check.
-On Windows and macOS, General settings can hide this 36 px strip and use the native title bar
-and window buttons instead. The device preference defaults to showing the custom strip and
-is saved with other app preferences; older saved settings keep that default. macOS switches
-without restarting and keeps its native traffic lights. Linux always omits the app strip and
-defaults to system decorations; on Wayland compositors without server decorations, including GNOME,
-winit uses its Adwaita frame instead of the basic fallback. GNOME rendering remains unverified
-in this macOS fast local pass. Linux General → Window includes **Hide window decorations**,
-which requests a borderless window immediately and persists across restarts. Moving, resizing
-and closing then use the window manager's controls. The compositor controls whether decoration
-requests are honored; native X11/Wayland verification of this toggle remains pending.
 
 | Platform | Build/runtime requirements | Status |
 |---|---|---|

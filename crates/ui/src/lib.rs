@@ -1223,7 +1223,6 @@ impl MessagingUi {
 						))
 						.layout(egui::Layout::right_to_left(egui::Align::Center)),
 					|ui| {
-						design::window_controls(ui);
 						ui.spacing_mut().item_spacing.x = 10.0;
 						if self.updates.available || self.updates.ready {
 							let (label, icon) = if self.updates.ready {

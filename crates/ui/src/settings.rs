@@ -854,7 +854,11 @@ impl MessagingUi {
 			#[cfg(any(target_os = "windows", target_os = "macos"))]
 			{
 				let label = language.text("general-hide-title-bar");
-				let description = language.text("general-hide-title-bar-description");
+				let description = language.text(if cfg!(target_os = "windows") {
+					"general-hide-title-bar-description-windows"
+				} else {
+					"general-hide-title-bar-description"
+				});
 				design::switch(ui, &label, Some(&description), &mut self.hide_title_bar);
 				design::card_divider(ui);
 			}

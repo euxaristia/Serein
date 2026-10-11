@@ -48,6 +48,8 @@ pub struct AppPreferences {
 	pub hide_nitro_emojis: bool,
 	/// Device-local opt-in; older saved preferences deserialize with conversion off.
 	pub convert_emoticons: bool,
+	/// Hide the in-app title strip. macOS then shows the system title bar.
+	/// Windows keeps the system frame either way.
 	pub hide_title_bar: bool,
 	pub hide_window_decorations: bool,
 	pub primary_color: Option<[u8; 3]>,

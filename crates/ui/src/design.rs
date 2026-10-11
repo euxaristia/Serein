@@ -1197,17 +1197,11 @@ pub fn apply(ctx: &egui::Context) {
 pub const TITLE_BAR_HEIGHT: f32 = 36.0;
 /// Space reserved at the left of window strips for macOS traffic lights.
 pub const TRAFFIC_LIGHT_INSET: f32 = if cfg!(target_os = "macos") { 72.0 } else { 0.0 };
-/// Width of the Windows caption buttons drawn by [`window_controls`]; zero elsewhere.
-pub const WINDOW_CONTROLS_WIDTH: f32 = if cfg!(target_os = "windows") {
-	3.0 * 46.0
-} else {
-	0.0
-};
 
-/// Make `rect` behave like a native title bar: drag moves the window and, where the app
-/// draws its own frame (Windows), a double click toggles maximize.
+/// Make `rect` start a native window move. The system frame owns caption buttons,
+/// resizing and double-click maximize.
 pub fn window_drag(ui: &mut egui::Ui, rect: egui::Rect) {
-	// The OS owns dragging. Sensing only clicks lets child caption buttons win hit testing.
+	// The OS owns dragging. Sensing only clicks lets child controls win hit testing.
 	let response = ui.interact(
 		rect,
 		ui.scope_id().with("window-drag"),
@@ -1219,162 +1213,6 @@ pub fn window_drag(ui: &mut egui::Ui, rect: egui::Rect) {
 	{
 		ui.ctx().send_viewport_cmd(egui::ViewportCommand::StartDrag);
 	}
-	if cfg!(target_os = "windows") && response.double_clicked() {
-		let maximized = ui.input(|i| i.viewport().maximized.unwrap_or(false));
-		ui.ctx()
-			.send_viewport_cmd(egui::ViewportCommand::Maximized(!maximized));
-	}
-}
-
-/// Native resize handles for the undecorated Windows viewport, including sign-in.
-pub fn window_resize(ctx: &egui::Context) {
-	if !cfg!(target_os = "windows")
-		|| ctx.input(|i| {
-			i.viewport().maximized.unwrap_or(false) || i.viewport().fullscreen.unwrap_or(false)
-		}) {
-		return;
-	}
-	use egui::{CursorIcon as C, ResizeDirection as D};
-	let rect = ctx.viewport_rect();
-	let (l, r, t, b) = (rect.left(), rect.right(), rect.top(), rect.bottom());
-	let edge = 5.0;
-	let corner = 12.0;
-	for (index, (min, max, direction, cursor)) in [
-		(
-			[l, t],
-			[l + corner, t + corner],
-			D::NorthWest,
-			C::ResizeNwSe,
-		),
-		(
-			[r - corner, t],
-			[r, t + corner],
-			D::NorthEast,
-			C::ResizeNeSw,
-		),
-		(
-			[l, b - corner],
-			[l + corner, b],
-			D::SouthWest,
-			C::ResizeNeSw,
-		),
-		(
-			[r - corner, b - corner],
-			[r, b],
-			D::SouthEast,
-			C::ResizeNwSe,
-		),
-		(
-			[l + corner, t],
-			[r - corner, t + edge],
-			D::North,
-			C::ResizeVertical,
-		),
-		(
-			[l + corner, b - edge],
-			[r - corner, b],
-			D::South,
-			C::ResizeVertical,
-		),
-		(
-			[l, t + corner],
-			[l + edge, b - corner],
-			D::West,
-			C::ResizeHorizontal,
-		),
-		(
-			[r - edge, t + corner],
-			[r, b - corner],
-			D::East,
-			C::ResizeHorizontal,
-		),
-	]
-	.into_iter()
-	.enumerate()
-	{
-		let handle = egui::Rect::from_min_max(min.into(), max.into());
-		egui::Area::new(egui::Id::unique(("window-resize", index)))
-			.order(egui::Order::Foreground)
-			.fixed_pos(handle.min)
-			.constrain(false)
-			.default_size(handle.size())
-			.movable(false)
-			.show(ctx, |ui| {
-				let (_, response) = ui.allocate_exact_size(handle.size(), egui::Sense::click());
-				let response = response.on_hover_cursor(cursor);
-				if response.is_pointer_button_down_on()
-					&& ui.input(|i| i.pointer.button_pressed(egui::PointerButton::Primary))
-				{
-					ctx.send_viewport_cmd(egui::ViewportCommand::BeginResize(direction));
-				}
-			});
-	}
-}
-
-/// Discord-style caption buttons (minimize, maximize/restore, close) for the undecorated
-/// Windows frame. Lay out in a right-to-left `ui`; a no-op on other platforms.
-pub fn window_controls(ui: &mut egui::Ui) {
-	if !cfg!(target_os = "windows") {
-		return;
-	}
-	let p = palette(ui);
-	let maximized = ui.input(|i| i.viewport().maximized.unwrap_or(false));
-	let height = ui.available_height().clamp(28.0, 36.0);
-	ui.spacing_mut().item_spacing.x = 0.0;
-	let caption =
-		|ui: &mut egui::Ui, label: &str, danger: bool| -> (egui::Response, egui::Rect, Color32) {
-			let (rect, response) =
-				ui.allocate_exact_size(egui::vec2(46.0, height), egui::Sense::click());
-			response.widget_info(|| egui::WidgetInfo::labeled(egui::Role::Button, true, label));
-			let hovered = response.hovered() || response.has_focus();
-			if hovered {
-				ui.painter()
-					.rect_filled(rect, 0, if danger { rgb(0xc42b1c) } else { p.hover });
-			}
-			let color = if hovered && danger {
-				Color32::WHITE
-			} else if hovered {
-				p.text_strong
-			} else {
-				p.text
-			};
-			(response, rect, color)
-		};
-	let (close, rect, color) = caption(ui, "Close", true);
-	let c = rect.center();
-	let stroke = Stroke::new(1.0, color);
-	ui.painter().line_segment(
-		[c + egui::vec2(-5.0, -5.0), c + egui::vec2(5.0, 5.0)],
-		stroke,
-	);
-	ui.painter().line_segment(
-		[c + egui::vec2(-5.0, 5.0), c + egui::vec2(5.0, -5.0)],
-		stroke,
-	);
-	if close.clicked() {
-		ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
-	}
-	let (toggle, rect, color) = caption(ui, if maximized { "Restore" } else { "Maximize" }, false);
-	let c = rect.center();
-	let stroke = Stroke::new(1.0, color);
-	let square = egui::Rect::from_center_size(c, egui::Vec2::splat(10.0));
-	ui.painter()
-		.rect_stroke(square, 1, stroke, egui::StrokeKind::Middle);
-	if toggle.clicked() {
-		ui.ctx()
-			.send_viewport_cmd(egui::ViewportCommand::Maximized(!maximized));
-	}
-	let (minimize, rect, color) = caption(ui, "Minimize", false);
-	let c = rect.center();
-	ui.painter().line_segment(
-		[c + egui::vec2(-5.0, 0.5), c + egui::vec2(5.0, 0.5)],
-		Stroke::new(1.0, color),
-	);
-	if minimize.clicked() {
-		ui.ctx()
-			.send_viewport_cmd(egui::ViewportCommand::Minimized(true));
-	}
-	ui.add_space(6.0);
 }
 
 /// Full-width accent call to action with centred text and an optional leading icon.

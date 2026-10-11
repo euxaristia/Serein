@@ -509,12 +509,10 @@ fn main() -> eframe::Result {
 					.with_title_shown(false)
 					.with_titlebar_shown(false)
 					.with_fullsize_content_view(true)
-			} else if cfg!(target_os = "windows") {
-				// The app paints its own caption strip and buttons; see `ui::design::window_controls`.
-				builder.with_decorations(false)
 			} else if cfg!(target_os = "linux") {
 				builder.with_decorations(!hide_window_decorations)
 			} else {
+				// Windows keeps the system title bar, borders and caption buttons.
 				builder
 			}
 		},
@@ -1394,14 +1392,6 @@ fn demo_members(
 	}
 }
 
-#[cfg(target_os = "windows")]
-fn align_undecorated_surface(window: &winit::window::Window) {
-	use winit::platform::windows::WindowExtWindows as _;
-	// egui-winit turns on winit's 1px restored-client shift for custom chrome.
-	// Maximized skips the shift.
-	window.set_undecorated_shadow(false);
-}
-
 impl Desktop {
 	fn new(
 		cc: &eframe::CreationContext<'_>,
@@ -2185,8 +2175,9 @@ impl Desktop {
 		#[cfg(target_os = "windows")]
 		{
 			use winit::platform::windows::{CornerPreference, WindowExtWindows as _};
+			// Rounded corners are the normal Windows 11 frame. The window is created
+			// decorated, so leave winit's undecorated shadow adjustment untouched.
 			window.set_corner_preference(CornerPreference::Round);
-			align_undecorated_surface(&window);
 		}
 		// The GPU surface and X11 visual are selected at startup. Opaque launches
 		// keep the same native/compositor path as builds without window effects.
@@ -4328,16 +4319,8 @@ impl Desktop {
 				egui::Frame::NONE
 					.inner_margin(egui::Margin {
 						left: (16.0 + self.traffic_light_inset()) as i8,
-						right: if ui::design::WINDOW_CONTROLS_WIDTH > 0.0 {
-							0
-						} else {
-							16
-						},
-						top: if ui::design::WINDOW_CONTROLS_WIDTH > 0.0 {
-							0
-						} else {
-							16
-						},
+						right: 16,
+						top: 16,
 						bottom: 0,
 					})
 					.show(ui, |ui| {
@@ -4349,14 +4332,6 @@ impl Desktop {
 									16.0,
 								)
 								.color(p.muted),
-							);
-							ui.with_layout(
-								egui::Layout::right_to_left(egui::Align::Center),
-								|ui| {
-									if !self.messaging.hide_title_bar {
-										ui::design::window_controls(ui);
-									}
-								},
 							);
 						});
 					});
@@ -4507,13 +4482,7 @@ impl Desktop {
 							ui.with_layout(
 								egui::Layout::right_to_left(egui::Align::Center),
 								|ui| {
-									if ui::design::WINDOW_CONTROLS_WIDTH > 0.0
-										&& !self.messaging.hide_title_bar
-									{
-										ui::design::window_controls(ui);
-									} else {
-										ui.add_space(24.0);
-									}
+									ui.add_space(24.0);
 									ui.add_space(12.0);
 									// These popups hold settings controls, so a click inside
 									// must not dismiss them the way a menu command would.
@@ -6647,9 +6616,6 @@ impl eframe::App for Desktop {
 							);
 						});
 						ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-							if !self.messaging.hide_title_bar {
-								ui::design::window_controls(ui);
-							}
 							if ui
 								.add(
 									egui::Button::new(
@@ -7159,11 +7125,6 @@ impl eframe::App for Desktop {
 			self.window
 				.set_decorations(!self.messaging.hide_window_decorations);
 		}
-		#[cfg(target_os = "windows")]
-		if self.window.is_decorated() != self.messaging.hide_title_bar {
-			self.window.set_decorations(self.messaging.hide_title_bar);
-			align_undecorated_surface(&self.window);
-		}
 		#[cfg(target_os = "macos")]
 		if let Err(error) =
 			platform::window::set_native_title_bar(&self.window, self.messaging.hide_title_bar)
@@ -7340,7 +7301,6 @@ impl eframe::App for Desktop {
 				None => {}
 			}
 		}
-		ui::design::window_resize(&ctx);
 		self.frame_metrics.reflows = self.messaging.timeline_reflows();
 		self.frame_metrics.finish();
 	}

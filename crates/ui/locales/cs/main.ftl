@@ -55,6 +55,7 @@ general-hide-decorations = Skrýt dekorace okna
 general-hide-decorations-description = Odebere systémový titulní pruh a okraje. K přesunu, změně velikosti nebo zavření použijte správce oken.
 general-hide-title-bar = Skrýt titulní pruh Sereinu
 general-hide-title-bar-description = Místo něj použije systémový titulní pruh a tlačítka okna.
+general-hide-title-bar-description-windows = Skryje titulní pruh Sereinu. Minimalizovat, maximalizovat a zavřít zůstávají na systémovém titulním pruhu.
 general-keep-menu-bar = Ponechat Serein v řádku nabídek
 general-keep-system-tray = Ponechat Serein v oznamovací oblasti
 general-menu-bar-description = Zavřením okna zůstane Serein v řádku nabídek. Ukončíte ho z jeho nabídky.

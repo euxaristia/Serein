@@ -55,6 +55,7 @@ general-hide-decorations = Hide window decorations
 general-hide-decorations-description = Remove the system title bar and borders. Use your window manager to move, resize or close Serein.
 general-hide-title-bar = Hide Serein title bar
 general-hide-title-bar-description = Use the system title bar and window buttons instead.
+general-hide-title-bar-description-windows = Hides Serein's title strip. Minimize, maximize and close stay on the system title bar.
 general-keep-menu-bar = Keep Serein in the menu bar
 general-keep-system-tray = Keep Serein in the system tray
 general-menu-bar-description = Closing the window keeps Serein in the menu bar. Quit from its menu to exit.

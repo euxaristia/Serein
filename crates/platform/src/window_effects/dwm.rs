@@ -1,6 +1,7 @@
-//! DWM draws a system backdrop only inside the window frame. The app paints its own caption,
-//! so the frame is extended over the whole client area while blur is on; the transparent
-//! composition swapchain then lets the acrylic show through wherever surfaces are translucent.
+//! DWM draws a system backdrop only inside the window frame. While blur is on, the frame is
+//! extended over the client area so translucent surfaces can show the acrylic. The desktop
+//! window keeps the system caption. The subclass masks native caption buttons only if a
+//! window is undecorated, so they cannot paint under a custom frame.
 #![allow(unsafe_code)]
 
 use windows::Win32::Foundation::{HANDLE, HWND, LPARAM, LRESULT, WPARAM};

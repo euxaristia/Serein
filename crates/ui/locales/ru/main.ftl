@@ -55,6 +55,7 @@ general-hide-decorations = Скрыть украшения на окнах
 general-hide-decorations-description = Удалите строку заголовка и границы системы. Используйте оконный менеджер, чтобы переместить, изменить размер или закрыть Serein.
 general-hide-title-bar = Скрыть строку заголовка Серейн
 general-hide-title-bar-description = Вместо этого используйте системную строку заголовка и кнопки окна.
+general-hide-title-bar-description-windows = Скрывает строку заголовка Серейн. Свернуть, развернуть и закрыть остаются на системной строке заголовка.
 general-keep-menu-bar = Держите Серейн в строке меню
 general-keep-system-tray = Держите Серейн в системном трее
 general-menu-bar-description = При закрытии окна Серейн остается в строке меню. Выйдите из меню, чтобы выйти.

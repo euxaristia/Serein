@@ -55,6 +55,7 @@ general-hide-decorations = Ukryj dekoracje okienne
 general-hide-decorations-description = Usuń systemowy pasek tytułu i obramowania. Użyj menedżera okien, aby przenieść, zmienić rozmiar lub zamknąć Serein.
 general-hide-title-bar = Ukryj pasek tytułu Serein
 general-hide-title-bar-description = Zamiast tego użyj systemowego paska tytułu i przycisków okien.
+general-hide-title-bar-description-windows = Ukrywa pasek tytułu Serein. Minimalizuj, maksymalizuj i zamknij zostają na systemowym pasku tytułu.
 general-keep-menu-bar = Trzymaj Serein na pasku menu
 general-keep-system-tray = Trzymaj Serein w zasobniku systemowym
 general-menu-bar-description = Zamknięcie okna powoduje zatrzymanie Sereina na pasku menu. Wyjdź z menu, aby wyjść.

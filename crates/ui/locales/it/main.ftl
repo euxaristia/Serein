@@ -55,6 +55,7 @@ general-hide-decorations = Nascondi le decorazioni delle finestre
 general-hide-decorations-description = Rimuovere la barra del titolo e i bordi del sistema. Usa il tuo window manager per spostare, ridimensionare o chiudere Serein.
 general-hide-title-bar = Nascondi la barra del titolo Serein
 general-hide-title-bar-description = Utilizzare invece la barra del titolo del sistema e i pulsanti della finestra.
+general-hide-title-bar-description-windows = Nasconde la barra del titolo di Serein. Riduci a icona, ingrandisci e chiudi restano sulla barra del titolo di sistema.
 general-keep-menu-bar = Mantieni Serein nella barra dei menu
 general-keep-system-tray = Mantieni Serein nella barra delle applicazioni
 general-menu-bar-description = Chiudendo la finestra si mantiene Serein nella barra dei menu. Esci dal suo menu per uscire.

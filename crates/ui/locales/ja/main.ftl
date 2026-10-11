@@ -55,6 +55,7 @@ general-hide-decorations = ウィンドウの装飾を隠す
 general-hide-decorations-description = システムのタイトルバーと境界線を削除します。ウィンドウ マネージャーを使用して、Serein を移動、サイズ変更、または閉じます。
 general-hide-title-bar = セレインのタイトルバーを非表示にする
 general-hide-title-bar-description = 代わりに、システムのタイトル バーとウィンドウ ボタンを使用してください。
+general-hide-title-bar-description-windows = セレインのタイトルストリップを隠します。最小化、最大化、閉じるはシステムのタイトルバーに残ります。
 general-keep-menu-bar = セレインをメニューバーに置いておく
 general-keep-system-tray = Serein をシステム トレイに入れておきます
 general-menu-bar-description = ウィンドウを閉じると、Serein がメニュー バーに表示されたままになります。終了するにはメニューから終了してください。
